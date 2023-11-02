@@ -96,44 +96,43 @@ namespace App.Core.UnitTests
 
         #endregion
 
-        #region GetNumberOfUsersByAge tests
+        #region GetUsersByAge tests
 
         [Test]
-        public async Task GetNumberOfUsersByAge_PropagatesException_WhenRepositoryThrowsException()
+        public async Task GetUsersByAge_PropagatesException_WhenRepositoryThrowsException()
         {
             _userRepositoryMock.Setup(repo => repo.GetUsers()).ThrowsAsync(new TestException());
 
-            var getUserAction = () => _userService.GetNumberOfUsersByAge();
+            var getUserAction = () => _userService.GetUsersByAge();
 
             await getUserAction.Should().ThrowExactlyAsync<TestException>();
         }
 
         [Test]
-        public async Task GetNumberOfUsersByAge_ReturnsEmptyDictionary_WhenNoUsersExist()
+        public async Task GetUsersByAge_ReturnsEmptyDictionary_WhenNoUsersExist()
         {
-            var result = await _userService.GetNumberOfUsersByAge();
+            var result = await _userService.GetUsersByAge();
 
             result.Should().BeEmpty();
         }
 
         [Test]
-        public async Task GetNumberOfUsersByAge_ReturnsExpectedResult_WhenUsersExist()
+        public async Task GetUsersByAge_ReturnsExpectedResult_WhenUsersExist()
         {
-            var users = new List<User>()
-            {
-                new User(1, 20, "Test", "User1", "M"),
-                new User(2, 20, "Test", "User2", "F"),
-                new User(3, 21, "Test", "User3", "F")
-            };
+            var user1 = new User(1, 20, "Test", "User1", "M");
+            var user2 = new User(2, 20, "Test", "User2", "F");
+            var user3 = new User(3, 21, "Test", "User3", "F");
+
+            var users = new [] { user1, user2, user3 };
 
             _userRepositoryMock.Setup(repo => repo.GetUsers()).ReturnsAsync(users);
 
-            var result = await _userService.GetNumberOfUsersByAge();
+            var result = await _userService.GetUsersByAge();
 
-            var expected = new Dictionary<int, int>
+            var expected = new Dictionary<int, IEnumerable<User>>
             {
-                { 20, 2 },
-                { 21, 1 }
+                { 20, new [] { user1, user2 } },
+                { 21, new [] { user3 } }
             };
 
             result.Should().BeEquivalentTo(expected);

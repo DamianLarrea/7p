@@ -23,11 +23,11 @@
             return users.Where(x => x.Age == age).ToList();
         }
 
-        public async Task<IDictionary<int, int>> GetNumberOfUsersByAge()
+        public async Task<IDictionary<int, IEnumerable<User>>> GetUsersByAge()
         {
             var users = await _userRepository.GetUsers();
 
-            return users.GroupBy(u => u.Age).ToDictionary(grp => grp.Key, grp => grp.Count());
+            return users.GroupBy(u => u.Age).ToDictionary(grp => grp.Key, grp => grp.ToList() as IEnumerable<User>);
         }
     }
 }

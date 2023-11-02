@@ -1,5 +1,8 @@
 ﻿
 namespace App.Data
 {
-    public record UserApiOptions(string Url);
+    public class UserApiOptions
+    {
+        public string Url { get; set; }
+    }
 }

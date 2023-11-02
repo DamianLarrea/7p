@@ -1,5 +1,5 @@
 ﻿
-namespace App.Data
+namespace App.Data.Options
 {
     public class UserApiOptions
     {

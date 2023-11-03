@@ -8,8 +8,8 @@
         string Gender
     )
     {
-        public bool IsMale => Gender == "M";
+        public bool IsMale => Gender.ToUpper() == "M";
 
-        public bool IsFemale => Gender == "F";
+        public bool IsFemale => Gender.ToUpper() == "F";
     };
 }

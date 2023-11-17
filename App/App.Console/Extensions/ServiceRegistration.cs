@@ -1,5 +1,6 @@
 ﻿using App.Core;
 using App.Data;
+using App.Data.Caching;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -12,6 +13,7 @@ namespace App.Console.Extensions
             builder.Services.AddScoped<Program>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<ICache, MemoryCache>();
 
             builder.Services.AddHttpClient();
             builder.Services.AddMemoryCache();

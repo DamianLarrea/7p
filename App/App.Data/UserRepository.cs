@@ -1,30 +1,19 @@
 ﻿using App.Core;
+using App.Data.Caching;
 using App.Data.Options;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace App.Data
 {
     public class UserRepository : IUserRepository
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IMemoryCache _memoryCache;
-        private readonly UserApiOptions _apiOptions;
-        private readonly CacheOptions _cacheOptions;
+        private readonly IApiClient _apiClient;
+        private readonly ICache _cache;
 
-        public UserRepository(
-            IHttpClientFactory httpClientFactory,
-            IOptions<UserApiOptions> apiOptions,
-            IOptions<CacheOptions> cacheOptions,
-            IMemoryCache memoryCache
-        )
+        public UserRepository(IApiClient apiClient, ICache cache)
         {
-            _httpClientFactory = httpClientFactory;
-            _memoryCache = memoryCache;
-            _apiOptions = apiOptions.Value;
-            _cacheOptions = cacheOptions.Value;
+            _apiClient = apiClient;
+            _cache = cache;
         }
 
         public async Task<IEnumerable<User>> GetUsers()
@@ -33,30 +22,22 @@ namespace App.Data
 
             if (users is not null) return users;
 
-            var client = _httpClientFactory.CreateClient();
-
-            var jsonString = await client.GetStringAsync(_apiOptions.Url);
-
-            var jsonStringCleaned = CleanJson(jsonString);
-            var dtos = JsonSerializer.Deserialize<IEnumerable<UserDto>>(jsonStringCleaned);
+            var dtos = await _apiClient.GetJsonAsync<IEnumerable<UserDto>>(string.Empty);
 
             users = dtos?.Select(MapToUser).ToList() ?? new List<User>();
 
-            CacheUsers(users);
+            if (users.Any()) CacheUsers(users);
 
             return users;
         }
 
         private static User MapToUser(UserDto dto) => new User(dto.Id, dto.Age, dto.FirstName, dto.LastName, dto.Gender);
 
-        // Try and clean the JSON string by fixing any issues with keys not being surrounded with quotes
-        private static string CleanJson(string json) => Regex.Replace(json, @"\b(\w+)(:)", "\"$1\"$2");
+        private void CacheUsers(IEnumerable<User> users) => _cache.Set("users", users);
 
-        private void CacheUsers(IEnumerable<User> users)
-            => _memoryCache.Set("users", users, DateTime.UtcNow.AddSeconds(_cacheOptions.TimeoutInSeconds));
-
-        private IEnumerable<User>? FetchUsersFromCache() {
-            _memoryCache.TryGetValue<IEnumerable<User>>("users", out var users); return users;
+        private IEnumerable<User>? FetchUsersFromCache()
+        {
+            _cache.TryGetValue<IEnumerable<User>>("users", out var users); return users;
         }
     }
 }

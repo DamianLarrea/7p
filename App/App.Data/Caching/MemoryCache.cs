@@ -1,5 +1,6 @@
 ﻿using App.Data.Options;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 
 namespace App.Data.Caching
 {
@@ -10,10 +11,10 @@ namespace App.Data.Caching
 
         private readonly CacheOptions _cacheOptions;
 
-        public MemoryCache(IMemoryCache memoryCache, CacheOptions cacheOptions)
+        public MemoryCache(IMemoryCache memoryCache, IOptions<CacheOptions> cacheOptions)
         {
             _memoryCache = memoryCache;
-            _cacheOptions = cacheOptions;
+            _cacheOptions = cacheOptions.Value;
         }
 
         public void Set<T>(object key, T entry) => _memoryCache.Set(key, entry, DateTime.UtcNow.AddSeconds(_cacheOptions.TimeoutInSeconds));

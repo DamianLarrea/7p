@@ -69,6 +69,7 @@ namespace App.Data.UnitTests
         [Test]
         public async Task GetUsers_GivenCacheContainsUsers_ReturnsCachedResultWithoutMakingApiCall()
         {
+            // Needs to be typed as IEnumerable otherwise the mock fails
             IEnumerable<User>? cachedUsers = new[] { new User(1, 18, "Test", "User", "M") };
 
             _cacheMock

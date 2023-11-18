@@ -1,5 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
+[assembly: InternalsVisibleTo("App.Data.UnitTests")]
 namespace App.Data
 {
     internal class UserDto

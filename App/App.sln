@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Console", "App.Console\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Core", "App.Core\App.Core.csproj", "{5B30A823-B7A0-4C48-9ECC-AB807D323DFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Core.UnitTests", "App.Core.UnitTests\App.Core.UnitTests.csproj", "{B63CA6C2-7F02-408E-9C57-989F6D8BA04F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Core.UnitTests", "App.Core.UnitTests\App.Core.UnitTests.csproj", "{B63CA6C2-7F02-408E-9C57-989F6D8BA04F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Data", "App.Data\App.Data.csproj", "{2C4ABB3F-5EF8-4DD4-B71A-4E17D3A992EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Data.UnitTests", "App.Data.UnitTests\App.Data.UnitTests.csproj", "{B3500327-8CE0-4F22-9C6B-CA03789AAD1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{2C4ABB3F-5EF8-4DD4-B71A-4E17D3A992EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C4ABB3F-5EF8-4DD4-B71A-4E17D3A992EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C4ABB3F-5EF8-4DD4-B71A-4E17D3A992EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3500327-8CE0-4F22-9C6B-CA03789AAD1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3500327-8CE0-4F22-9C6B-CA03789AAD1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3500327-8CE0-4F22-9C6B-CA03789AAD1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3500327-8CE0-4F22-9C6B-CA03789AAD1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

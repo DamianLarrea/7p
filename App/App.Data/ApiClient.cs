@@ -1,4 +1,5 @@
 ﻿
+using Polly.Registry;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -6,23 +7,36 @@ namespace App.Data
 {
     public interface IApiClient
     {
-        public Task<T?> GetJsonAsync<T>(string uri);
+        public Task<T?> GetJsonAsync<T>(string uri, CancellationToken token);
     }
 
     public class Apiclient : IApiClient
     {
         private readonly HttpClient _httpClient;
+        private readonly ResiliencePipelineProvider<string> _resiliencePipelineProvider;
 
-        public Apiclient(HttpClient httpClient)
+        public Apiclient(HttpClient httpClient, ResiliencePipelineProvider<string> resiliencePipelineProvider)
         {
             _httpClient = httpClient;
+            _resiliencePipelineProvider = resiliencePipelineProvider;
         }
 
-        public async Task<T?> GetJsonAsync<T>(string uri)
+        public async Task<T?> GetJsonAsync<T>(string uri, CancellationToken token)
         {
-            var jsonString = await _httpClient.GetStringAsync(uri);
+            var pipeline = _resiliencePipelineProvider.GetPipeline("tech-test-pipeline");
+
+            return await pipeline.ExecuteAsync(
+                async ct => await FetchAsync<T>(uri, ct),
+                token
+            );
+        }
+
+        private async Task<T?> FetchAsync<T>(string uri, CancellationToken token)
+        {
+            var jsonString = await _httpClient.GetStringAsync(uri, token);
 
             var jsonStringCleaned = CleanJson(jsonString);
+
             return JsonSerializer.Deserialize<T>(jsonStringCleaned);
         }
 

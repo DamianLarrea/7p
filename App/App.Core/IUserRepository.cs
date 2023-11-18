@@ -2,6 +2,6 @@
 {
     public interface IUserRepository
     {
-        public Task<IEnumerable<User>> GetUsers();
+        public Task<IEnumerable<User>> GetUsersAsync(CancellationToken token);
     }
 }

@@ -21,9 +21,9 @@ namespace App.Core.UnitTests
         [Test]
         public async Task GetUser_PropagatesException_WhenRepositoryThrowsException()
         {
-            _userRepositoryMock.Setup(repo => repo.GetUsers()).ThrowsAsync(new TestException());
+            _userRepositoryMock.Setup(repo => repo.GetUsersAsync(It.IsAny<CancellationToken>())).ThrowsAsync(new TestException());
             
-            var getUserAction = () => _userService.GetUser(0);
+            var getUserAction = () => _userService.GetUserAsync(0, CancellationToken.None);
 
             await getUserAction.Should().ThrowExactlyAsync<TestException>();
         }
@@ -31,7 +31,7 @@ namespace App.Core.UnitTests
         [Test]
         public async Task GetUser_ReturnsNull_WhenUserDoesNotExist()
         {
-            var user = await _userService.GetUser(0);
+            var user = await _userService.GetUserAsync(0, CancellationToken.None);
 
             user.Should().BeNull();
         }
@@ -41,9 +41,9 @@ namespace App.Core.UnitTests
         {
             var user = new User(1, 18, "Test", "User", "M");
 
-            _userRepositoryMock.Setup(repo => repo.GetUsers()).ReturnsAsync(new[] { user });
+            _userRepositoryMock.Setup(repo => repo.GetUsersAsync(It.IsAny<CancellationToken>())).ReturnsAsync(new[] { user });
 
-            var result = await _userService.GetUser(1);
+            var result = await _userService.GetUserAsync(1, CancellationToken.None);
 
             result.Should().Be(user);
         }
@@ -55,9 +55,9 @@ namespace App.Core.UnitTests
         [Test]
         public async Task GetUsersForAge_PropagateException_WhenRepositoryThrows()
         {
-            _userRepositoryMock.Setup(repo => repo.GetUsers()).ThrowsAsync(new TestException());
+            _userRepositoryMock.Setup(repo => repo.GetUsersAsync(It.IsAny<CancellationToken>())).ThrowsAsync(new TestException());
 
-            var getUserAction = () => _userService.GetUsersForAge(0);
+            var getUserAction = () => _userService.GetUsersForAgeAsync(0, CancellationToken.None);
 
             await getUserAction.Should().ThrowExactlyAsync<TestException>();
         }
@@ -71,9 +71,9 @@ namespace App.Core.UnitTests
                 new User(2, 21, "Test", "User2", "F")
             };
 
-            _userRepositoryMock.Setup(repo => repo.GetUsers()).ReturnsAsync(users);
+            _userRepositoryMock.Setup(repo => repo.GetUsersAsync(It.IsAny<CancellationToken>())).ReturnsAsync(users);
 
-            var result = await _userService.GetUsersForAge(18);
+            var result = await _userService.GetUsersForAgeAsync(18, CancellationToken.None);
 
             result.Should().NotBeNull().And.BeEmpty();
         }
@@ -87,9 +87,9 @@ namespace App.Core.UnitTests
                 new User(2, 18, "Test", "User2", "F")
             };
 
-            _userRepositoryMock.Setup(repo => repo.GetUsers()).ReturnsAsync(users);
+            _userRepositoryMock.Setup(repo => repo.GetUsersAsync(It.IsAny<CancellationToken>())).ReturnsAsync(users);
 
-            var result = await _userService.GetUsersForAge(18);
+            var result = await _userService.GetUsersForAgeAsync(18, CancellationToken.None);
 
             result.Should().BeEquivalentTo(users);
         }
@@ -101,9 +101,9 @@ namespace App.Core.UnitTests
         [Test]
         public async Task GetUsersByAge_PropagatesException_WhenRepositoryThrowsException()
         {
-            _userRepositoryMock.Setup(repo => repo.GetUsers()).ThrowsAsync(new TestException());
+            _userRepositoryMock.Setup(repo => repo.GetUsersAsync(It.IsAny<CancellationToken>())).ThrowsAsync(new TestException());
 
-            var getUserAction = () => _userService.GetUsersByAge();
+            var getUserAction = () => _userService.GetUsersByAgeAsync(CancellationToken.None);
 
             await getUserAction.Should().ThrowExactlyAsync<TestException>();
         }
@@ -111,7 +111,7 @@ namespace App.Core.UnitTests
         [Test]
         public async Task GetUsersByAge_ReturnsEmptyDictionary_WhenNoUsersExist()
         {
-            var result = await _userService.GetUsersByAge();
+            var result = await _userService.GetUsersByAgeAsync(CancellationToken.None);
 
             result.Should().BeEmpty();
         }
@@ -125,9 +125,9 @@ namespace App.Core.UnitTests
 
             var users = new [] { user1, user2, user3 };
 
-            _userRepositoryMock.Setup(repo => repo.GetUsers()).ReturnsAsync(users);
+            _userRepositoryMock.Setup(repo => repo.GetUsersAsync(It.IsAny<CancellationToken>())).ReturnsAsync(users);
 
-            var result = await _userService.GetUsersByAge();
+            var result = await _userService.GetUsersByAgeAsync(CancellationToken.None);
 
             var expected = new Dictionary<int, IEnumerable<User>>
             {

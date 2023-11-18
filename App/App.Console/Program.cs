@@ -41,14 +41,14 @@ namespace App.Console
 
         private async Task FetchAndLogUserWithId(int id)
         {
-            var user = await _userService.GetUser(id);
+            var user = await _userService.GetUserAsync(id, CancellationToken.None);
 
             if(user is not null) System.Console.WriteLine($"{user.FirstName} {user.LastName}");
         }
 
         private async Task FetchAndLogUsersOfAge(int age)
         {
-            var users = await _userService.GetUsersForAge(age);
+            var users = await _userService.GetUsersForAgeAsync(age, CancellationToken.None);
 
             var userFirstNames = users.Select(u => u.FirstName);
 
@@ -58,7 +58,7 @@ namespace App.Console
 
         private async Task FetchAndLogUserCountsByAgeAndGender()
         {
-            var usersByAge = await _userService.GetUsersByAge();
+            var usersByAge = await _userService.GetUsersByAgeAsync(CancellationToken.None);
 
             var userCountsByAgeAndGender = usersByAge.Select(kvp => {
                 var counts = GetCountsByGender(kvp.Value);
@@ -91,6 +91,7 @@ namespace App.Console
             var host = Host.CreateApplicationBuilder()
                 .ConfigureOptions()
                 .RegisterServices()
+                .AddPollyPipeline("tech-test-pipeline")
                 .Build();
 
             using var scope = host.Services.CreateScope();

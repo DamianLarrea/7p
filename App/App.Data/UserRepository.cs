@@ -1,7 +1,5 @@
 ﻿using App.Core;
 using App.Data.Caching;
-using App.Data.Options;
-using Microsoft.Extensions.Options;
 
 namespace App.Data
 {
@@ -16,13 +14,13 @@ namespace App.Data
             _cache = cache;
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<IEnumerable<User>> GetUsersAsync(CancellationToken token)
         {
             var users = FetchUsersFromCache();
 
             if (users is not null) return users;
 
-            var dtos = await _apiClient.GetJsonAsync<IEnumerable<UserDto>>(string.Empty);
+            var dtos = await _apiClient.GetJsonAsync<IEnumerable<UserDto>>(string.Empty, token);
 
             users = dtos?.Select(MapToUser).ToList() ?? new List<User>();
 

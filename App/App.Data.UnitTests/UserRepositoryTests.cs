@@ -25,10 +25,10 @@ namespace App.Data.UnitTests
         public async Task GetUsers_GivenApiClientReturnsNull_ReturnsEmptyList()
         {
             _apiClientMock
-                .Setup(client => client.GetJsonAsync<IEnumerable<UserDto>>(It.IsAny<string>()))
+                .Setup(client => client.GetJsonAsync<IEnumerable<UserDto>>(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((IEnumerable<UserDto>?)null);
 
-            var users = await _userRepository.GetUsers();
+            var users = await _userRepository.GetUsersAsync(CancellationToken.None);
 
             // No need to check that users is not null as BeEmpty performs the check internally
             users.Should().BeEmpty();
@@ -39,10 +39,10 @@ namespace App.Data.UnitTests
         {
             var userDto = new UserDto { Age = 18, FirstName = "Test", Gender = "M", Id = 1, LastName = "User" };
             _apiClientMock
-                .Setup(client => client.GetJsonAsync<IEnumerable<UserDto>>(It.IsAny<string>()))
+                .Setup(client => client.GetJsonAsync<IEnumerable<UserDto>>(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { userDto });
 
-            var users = await _userRepository.GetUsers();
+            var users = await _userRepository.GetUsersAsync(CancellationToken.None);
 
             users.Should().BeEquivalentTo(new[]
             {
@@ -55,10 +55,10 @@ namespace App.Data.UnitTests
         {
             var userDto = new UserDto { Age = 18, FirstName = "Test", Gender = "M", Id = 1, LastName = "User" };
             _apiClientMock
-                .Setup(client => client.GetJsonAsync<IEnumerable<UserDto>>(It.IsAny<string>()))
+                .Setup(client => client.GetJsonAsync<IEnumerable<UserDto>>(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { userDto });
 
-            var users = await _userRepository.GetUsers();
+            var users = await _userRepository.GetUsersAsync(CancellationToken.None);
 
             _cacheMock.Verify(
                 cache => cache.Set(It.IsAny<object>(), users),
@@ -76,7 +76,7 @@ namespace App.Data.UnitTests
                 .Setup(cache => cache.TryGetValue(It.IsAny<object>(), out cachedUsers))
                 .Returns(true);
 
-            var users = await _userRepository.GetUsers();
+            var users = await _userRepository.GetUsersAsync(CancellationToken.None);
 
             users.Should().BeSameAs(cachedUsers);
 
